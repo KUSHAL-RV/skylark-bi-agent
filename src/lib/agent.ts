@@ -85,24 +85,15 @@ export async function chatWithAgent(messages: { role: string; content: string }[
           resultData.workOrders = wos;
         }
 
-        // Send tool response back to model
-        result = await chat.sendMessage([{
-          functionResponse: {
-            name: call.name,
-            response: resultData
-          }
-        }]);
+        // Send tool response back to model as text to bypass role issues
+        const jsonStr = JSON.stringify(resultData);
+        result = await chat.sendMessage(`Data retrieved from ${call.name}: ${jsonStr}`);
         response = result.response;
         functionCalls = response.functionCalls();
         
       } catch (err: any) {
-        // Send error back to model
-        result = await chat.sendMessage([{
-          functionResponse: {
-            name: call.name,
-            response: { error: err.message }
-          }
-        }]);
+        // Send error back to model as text
+        result = await chat.sendMessage(`Error calling ${call.name}: ${err.message}`);
         response = result.response;
         functionCalls = response.functionCalls();
       }
