@@ -29,7 +29,7 @@ function mapItemToObject(item: MondayItem, schema: MondayColumn[]): Record<strin
   for (const col of item.column_values) {
     const schemaCol = schema.find(c => c.id === col.id);
     if (schemaCol) {
-      let val = col.text;
+      let val: any = col.text;
       if (val === null || val === undefined) {
         try {
           val = col.value ? JSON.parse(col.value) : null;
