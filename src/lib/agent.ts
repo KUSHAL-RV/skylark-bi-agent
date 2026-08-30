@@ -40,6 +40,11 @@ export async function chatWithAgent(messages: { role: string; content: string }[
     parts: [{ text: m.content }],
   }));
   
+  // Gemini requires the first message in history to be from 'user'
+  while (history.length > 0 && history[0].role === 'model') {
+    history.shift();
+  }
+  
   const lastMessage = messages[messages.length - 1].content;
 
   const chat = model.startChat({ history });
